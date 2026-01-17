@@ -16,7 +16,8 @@ else
   java -jar "$JAR_PATH" \
     --hub-router.execution.mode=COLLECTION \
     --hub-router.execution.collector.mode=http \
-    --hub-router.execution.immediate-logging.enabled=false \
+    --grpc.server.port=0 \
+    --hub-router.execution.immediate-logging.enabled=true \
     --hub-router.execution.output.info-enabled=true \
     --hub-router.execution.output.trace-enabled=true \
     --hub-router.execution.output.console=true \
