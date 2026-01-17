@@ -16,9 +16,10 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
       KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093"
       CLUSTER_ID: "K0EA9p0yEe6MkAAAAkKsEg"
-
+    volumes:
+      - kafka-data:/var/lib/kafka/data
     healthcheck:
-      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1" ]
+      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:29092 --list >/dev/null 2>&1 || exit 1" ]
       interval: 5s
       timeout: 5s
       retries: 30
@@ -51,7 +52,6 @@ services:
       '
     restart: "no"
 
-
   collector-app:
     container_name: collector-app
     build:
@@ -61,9 +61,11 @@ services:
       kafka-init-topics:
         condition: service_completed_successfully
       kafka:
-        condition: service_started
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
       SERVER_PORT: "8080"
     ports:
       - "8080:8080"
+volumes:
+  kafka-data: { }
