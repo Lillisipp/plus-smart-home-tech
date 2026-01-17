@@ -4,68 +4,32 @@ services:
     hostname: kafka
     container_name: kafka
     ports:
-      - "9092:9092"
-      - "9101:9101"
+      - "9092:9092" # for client connections
+      - "9101:9101" # JMX
     restart: unless-stopped
     environment:
       KAFKA_NODE_ID: 1
-      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
-      KAFKA_PROCESS_ROLES: "broker,controller"
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
-      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093"
-      CLUSTER_ID: "K0EA9p0yEe6MkAAAAkKsEg"
-    volumes:
-      - kafka-data:/var/lib/kafka/data
-    healthcheck:
-      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:29092 --list >/dev/null 2>&1 || exit 1" ]
-      interval: 5s
-      timeout: 5s
-      retries: 30
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
 
   kafka-init-topics:
-    image: confluentinc/cp-kafka:7.4.3
+    image: confluentinc/confluent-local:7.4.3
     container_name: kafka-init-topics
     depends_on:
       - kafka
-    entrypoint: [ "/bin/bash","-lc" ]
-    command: >
-      '
-      echo "Waiting for Kafka...";
-      while ! kafka-topics --bootstrap-server kafka:29092 --list >/dev/null 2>&1; do
-        sleep 1;
-      done;
-      echo "Kafka is up. Creating topics...";
-
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists \
-        --topic telemetry.sensors.v1 --partitions 1 --replication-factor 1;
-
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists \
-        --topic telemetry.snapshots.v1 --partitions 1 --replication-factor 1;
-
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists \
-        --topic telemetry.hubs.v1 --partitions 1 --replication-factor 1;
-
-      echo "Topics created:";
-      kafka-topics --bootstrap-server kafka:29092 --list;
-      '
-    restart: "no"
-
-  collector-app:
-    container_name: collector-app
-    build:
-      context: ./telemetry/collector
-      dockerfile: Dockerfile
-    depends_on:
-      kafka-init-topics:
-        condition: service_completed_successfully
-      kafka:
-        condition: service_healthy
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
-      SERVER_PORT: "8080"
-    ports:
-      - "8080:8080"
-volumes:
-  kafka-data: { }
+    command: "bash -c \
+                'kafka-topics --create --topic telemetry.sensors.v1 \
+                             --partitions 1 --replication-factor 1 --if-not-exists \
+                             --bootstrap-server kafka:29092 && \
+                kafka-topics --create --topic telemetry.snapshots.v1 \
+                             --partitions 1 --replication-factor 1 --if-not-exists \
+                             --bootstrap-server kafka:29092 && \
+                kafka-topics --create --topic telemetry.hubs.v1 \
+                             --partitions 1 --replication-factor 1 --if-not-exists \
+                             --bootstrap-server kafka:29092'"
+    init: true
