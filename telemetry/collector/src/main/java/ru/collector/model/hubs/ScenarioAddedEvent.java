@@ -3,6 +3,7 @@ package ru.collector.model.hubs;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import ru.collector.model.DeviceAction;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 public class ScenarioAddedEvent extends HubEvent {
     @NotBlank
+    @Size(min = 3)
     private String name;
 
     @Valid

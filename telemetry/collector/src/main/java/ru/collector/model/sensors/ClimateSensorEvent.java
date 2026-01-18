@@ -8,9 +8,9 @@ import ru.collector.model.enams.SensorEventType;
 @Setter
 @Getter
 public class ClimateSensorEvent extends SensorEvent {
-    private int temperatureC;
-    private int humidity;
-    private int co2Level;
+    private Integer temperatureC;
+    private Integer humidity;
+    private Integer co2Level;
 
     @Override
     public SensorEventType getEventType() {

@@ -28,6 +28,13 @@ public class CollectorService {
     private final KafkaConfig kafkaConfig;
 
     public void collectSensorEvent(SensorEvent event) {
+        log.info("ENTER collectSensorEvent: eventClass={}, eventType={}, hubId={}, id={}, timestamp={}",
+                (event == null ? null : event.getClass().getSimpleName()),
+                (event == null ? null : event.getEventType()),
+                (event == null ? null : event.getHubId()),
+                (event == null ? null : event.getId()),
+                (event == null ? null : event.getTimestamp())
+        );
         if (event == null || event.getEventType() == null) {
             log.warn("Ignored SENSOR event: event/type is null");
             return;
@@ -35,7 +42,7 @@ public class CollectorService {
         String topic = kafkaConfig.getProducer().topic(KafkaConfig.TopicType.SENSORS_EVENTS);
         String key = event.getHubId();
 
-        log.info("Kafka SEND SENSOR: topic={}, key={}, type={}, id={}", topic, key, event.getEventType(), event.getId());
+        log.info("SENSOR routing: topic={}, key={}", topic, key);
 
         final SensorEventAvro avro;
         try {
@@ -167,13 +174,13 @@ public class CollectorService {
     }
 
     private DeviceAddedEventAvro mapDeviceAdded(DeviceAddedEvent e) {
-                log.info("Mapping DeviceAddedEvent to Avro: hubId={}, id={}, eventType={}, deviceType={}",
-                        e.getHubId(),                 // если есть в HubEvent
-                        e.getId(),
-                        e.getEventType(),
-                        e.getDeviceType());
+        log.info("Mapping DeviceAddedEvent to Avro: hubId={}, id={}, eventType={}, deviceType={}",
+                e.getHubId(),                 // если есть в HubEvent
+                e.getId(),
+                e.getEventType(),
+                e.getDeviceType());
 
-                DeviceAddedEventAvro p = new DeviceAddedEventAvro();
+        DeviceAddedEventAvro p = new DeviceAddedEventAvro();
         p.setId(e.getId());
         p.setType(DeviceTypeAvro.valueOf(e.getDeviceType().name()));
         return p;
