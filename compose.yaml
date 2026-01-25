@@ -16,6 +16,7 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
       KAFKA_LISTENERS: 'PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092'
       CLUSTER_ID: 'K0EA9p0yEe6MkAAAAkKsEg'
+      KAFKA_REST_BOOTSTRAP_SERVERS: "kafka:29092"
 
   kafka-init-topics:
     image: confluentinc/confluent-local:7.4.3

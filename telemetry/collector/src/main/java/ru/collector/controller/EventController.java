@@ -1,38 +1,50 @@
 package ru.collector.controller;
 
-import jakarta.validation.Valid;
+import com.google.protobuf.Empty;
+import io.grpc.Status;
+import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.collector.model.HubEvent;
-import ru.collector.model.SensorEvent;
+import net.devh.boot.grpc.server.service.GrpcService;
 import ru.collector.service.CollectorService;
+import ru.yandex.practicum.grpc.telemetry.collector.CollectorControllerGrpc;
+import ru.yandex.practicum.grpc.telemetry.event.HubEventProto;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 
 @Slf4j
-@RestController
+@GrpcService
 @RequiredArgsConstructor
-@RequestMapping("/events")
-public class EventController {
+public class EventController extends CollectorControllerGrpc.CollectorControllerImplBase {
 
     private final CollectorService collectorService;
 
-    @PostMapping(path = "/sensors", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> collectSensorEvent(@Valid @RequestBody SensorEvent event) {
-        log.info("sensor event received: type={}, hubId={}, id={}", event.getEventType(), event.getHubId(), event.getId());
-        collectorService.collectSensorEvent(event);
-        return ResponseEntity.ok().build();
+    @Override
+    public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
+        log.info("collectSensorEvent: {}", request);
+        try {
+            SensorEventProto.PayloadCase payloadCase = request.getPayloadCase();
+            collectorService.collectSensorEvent(request);
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            log.error("gRPC collectSensorEvent failed: hubId={}, id={}, payloadCase={}",
+                    request.getHubId(), request.getId(), request.getPayloadCase(), e);
+            responseObserver.onError(Status.INTERNAL.withCause(e).withDescription(e.getMessage()).asRuntimeException());
+        }
     }
 
-    @PostMapping(path = "/hubs", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> collectHubEvent(@Valid @RequestBody HubEvent event) {
-        log.info("hub event received: type={}, hubId={}", event.getEventType(), event.getHubId());
-        collectorService.collectHubEvent(event);
-        return ResponseEntity.ok().build();
+    @Override
+    public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
+        log.info("collectSensorEvent: {}", request);
+        try {
+            HubEventProto.PayloadCase payloadCase = request.getPayloadCase();
+            collectorService.collectHubEvent(request);
+            responseObserver.onNext(Empty.getDefaultInstance());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+
+            responseObserver.onError(Status.INTERNAL.withCause(e).withDescription(e.getMessage()).asRuntimeException());
+        }
     }
 
 }
