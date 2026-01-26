@@ -63,7 +63,7 @@ public class CollectorService {
                                 topic, key, event.getEventType(), event.getId(), ex);
                     } else {
                         var meta = result.getRecordMetadata();
-                        log.info("Kafka HUB send OK: topic={}, key={}, partition={}, offset={}",
+                        log.info("Kafka SENSOR send OK: topic={}, key={}, partition={}, offset={}",
                                 meta.topic(), key, meta.partition(), meta.offset()); // ИЗМЕНЕНИЕ
 
                     }
