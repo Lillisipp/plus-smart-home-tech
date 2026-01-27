@@ -17,6 +17,7 @@
     <modules>
         <module>serialization</module>
         <module>collector</module>
+        <module>aggregator</module>
     </modules>
 
     <dependencies>
@@ -25,7 +26,6 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
 
         <dependency>
             <groupId>net.devh</groupId>
