@@ -35,16 +35,17 @@ public class EventController extends CollectorControllerGrpc.CollectorController
 
     @Override
     public void collectHubEvent(HubEventProto request, StreamObserver<Empty> responseObserver) {
-        log.info("collectSensorEvent: {}", request);
+        log.info("collectHubEvent: {}", request);
         try {
-            HubEventProto.PayloadCase payloadCase = request.getPayloadCase();
             collectorService.collectHubEvent(request);
             responseObserver.onNext(Empty.getDefaultInstance());
             responseObserver.onCompleted();
         } catch (Exception e) {
-
+            log.error("gRPC collectHubEvent failed: hubId={}, payloadCase={}",
+                    request.getHubId(), request.getPayloadCase(), e);
             responseObserver.onError(Status.INTERNAL.withCause(e).withDescription(e.getMessage()).asRuntimeException());
         }
     }
 
 }
+
