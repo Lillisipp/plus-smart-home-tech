@@ -11,6 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -20,13 +21,9 @@ public class KafkaProducerConfiguration {
 
     @Bean
     public ProducerFactory<Object, Object> producerFactory(KafkaConfig kafkaConfig) {
-        Map<String, Object> props = kafkaConfig.getProducer().getProperties();
+        Map<String, Object> props = new HashMap<>(kafkaConfig.getProducer().getProperties());
 
-        log.info("BOOTSTRAP from props = {}", props.get(org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG));
-        log.info("All props = {}", props);
-        log.info("Kafka producer properties loaded: keys={}", props.keySet());
-        log.info("props bootstrap={}", props.get("bootstrap.servers"));
-        log.info("props keys={}", props.keySet());
+        log.info("Kafka producer properties: {}", props);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GeneralAvroSerializer.class);
 
