@@ -56,13 +56,23 @@ public class CollectorService {
                     e);
             return;
         }
-        Instant ts = Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos());
-        sendToKafkaAndWait(topic, key, avro, ts, "SENSOR");
+        kafkaTemplate.send(topic, key, avro)
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("Kafka SENSOR send FAILED: topic={}, key={}, type={}, id={}",
+                                topic, key, event.getPayloadCase(), event.getId(), ex);
+                    } else {
+                        var meta = result.getRecordMetadata();
+                        log.info("Kafka HUB send OK: topic={}, key={}, partition={}, offset={}",
+                                meta.topic(), key, meta.partition(), meta.offset()); // ИЗМЕНЕНИЕ
+
+                    }
+                });
     }
 
     public void collectHubEvent(HubEventProto event) {
-        if (event == null || event.getPayloadCase() == HubEventProto.PayloadCase.PAYLOAD_NOT_SET) {
-            log.warn("Ignored HUB event: event/payload is null or not set");
+        if (event == null || event.getPayloadCase() == null) {
+            log.warn("Ignored HUB event: event/type is null");
             return;
         }
 
