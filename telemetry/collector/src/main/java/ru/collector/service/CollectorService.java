@@ -70,38 +70,6 @@ public class CollectorService {
                 });
     }
 
-    public void collectHubEvent(HubEvent event) {
-        if (event == null || event.getEventType() == null) {
-            log.warn("Ignored HUB event: event/type is null");
-            return;
-        }
-
-        String topic = kafkaConfig.getProducer().topic(KafkaConfig.TopicType.HUBS_EVENTS);
-        String key = event.getHubId();
-        log.info("Kafka SEND HUB: topic={}, key={}, type={}", topic, key, event.getEventType());
-
-        final HubEventAvro avro;
-        try {
-            avro = toHubEventAvro(event);
-        } catch (Exception e) {
-            log.error("Ignored HUB event due to mapping error: hubId={},  type={}",
-                    String.valueOf(event.getHubId()),
-                    event.getEventType(),
-                    e);
-            return;
-        }
-
-        kafkaTemplate.send(topic, key, avro)
-                .whenComplete((result, ex) -> {
-                    if (ex != null) {
-                        log.error("Kafka HUB send FAILED: topic={}, key={}, type={}", topic, key, event.getEventType(), ex);
-                    } else {
-                        var meta = result.getRecordMetadata();
-                        log.info("Kafka HUB send OK:: topic={}, key={}, type={}", topic, key, event.getEventType());
-                    }
-                });
-    }
-
     public void collectHubEvent(HubEventProto event) {
         if (event == null || event.getPayloadCase() == null) {
             log.warn("Ignored HUB event: event/type is null");
