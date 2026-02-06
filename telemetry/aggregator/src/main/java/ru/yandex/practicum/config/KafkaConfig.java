@@ -1,7 +1,7 @@
 package ru.yandex.practicum.config;
 
 import kafka.serializer.GeneralAvroSerializer;
-import kafka.serializer.SensorEventDeserializer;
+import kafka.serializer.deserializer.SensorEventDeserializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,6 @@ public class KafkaConfig {
         c.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         c.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class.getName());
 
-        // доп настройки из yml
         props.getConsumer().forEach(c::put);
 
         return new KafkaConsumer<>(c);

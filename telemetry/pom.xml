@@ -18,6 +18,8 @@
         <module>serialization</module>
         <module>collector</module>
         <module>aggregator</module>
+        <module>analyzer</module>
+
     </modules>
 
     <dependencies>
@@ -27,11 +29,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>net.devh</groupId>
-            <artifactId>grpc-server-spring-boot-starter</artifactId>
-            <version>3.1.0.RELEASE</version>
-        </dependency>
     </dependencies>
 
 </project>
