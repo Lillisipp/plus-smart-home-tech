@@ -46,7 +46,7 @@ services:
       POSTGRES_USER: analyzer
       POSTGRES_PASSWORD: analyzer
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U analyzer -d analyzer"]
+      test: [ "CMD-SHELL", "pg_isready -U analyzer -d analyzer" ]
       interval: 5s
       timeout: 3s
       retries: 10
