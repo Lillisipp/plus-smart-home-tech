@@ -13,9 +13,9 @@
 #      continue-on-error: true
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/analyzer
-    username: analyzer
-    password: analyzer
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -37,7 +37,7 @@ analyzer:
         enable.auto.commit: false
         group.id: telemetry.analyzer.snapshots
         key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value.deserializer: ru.yandex.practicum.kafka.deserializer.SensorsSnapshotDeserializer
+        value.deserializer: kafka.serializer.deserializer.SensorsSnapshotDeserializer
     hub-consumer:
       topic: telemetry.hubs.v1
       poll-timeout: 1s

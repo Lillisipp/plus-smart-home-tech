@@ -40,18 +40,13 @@ services:
     container_name: analyzer-postgres
     restart: unless-stopped
     ports:
-      - "127.0.0.1:5433:5432"
+      - "5432:5432"
     environment:
-      POSTGRES_DB: analyzer
-      POSTGRES_USER: analyzer
-      POSTGRES_PASSWORD: analyzer
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U analyzer -d analyzer" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 5s
       timeout: 3s
       retries: 10
-    volumes:
-      - analyzer_pg_data:/var/lib/postgresql/data
-
-volumes:
-  analyzer_pg_data:

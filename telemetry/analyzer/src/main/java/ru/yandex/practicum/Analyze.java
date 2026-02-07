@@ -14,11 +14,19 @@ public class Analyze {
         ConfigurableApplicationContext context = SpringApplication.run(Analyze.class, args);
 
         final HubEventProcessor processorHub = context.getBean(HubEventProcessor.class);
-        SnapshotProcessor processorSnapshot = context.getBean(SnapshotProcessor.class);
+        final SnapshotProcessor processorSnapshot = context.getBean(SnapshotProcessor.class);
 
         Thread hubThread = new Thread(processorHub);
         hubThread.setName("HubEventHandlerThread");
-        processorSnapshot.run();
+        Thread snapshotThread = new Thread(processorSnapshot);
+        snapshotThread.setName("SnapshotProcessorThread");
+
+        hubThread.start();
+        snapshotThread.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            context.close();
+        }));
 
     }
 }

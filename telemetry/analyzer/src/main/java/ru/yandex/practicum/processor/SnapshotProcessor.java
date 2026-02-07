@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SnapshotProcessor {
+public class SnapshotProcessor implements Runnable {
 
     private final AnalyzeKafkaProperties props;
     private final SnapshotAnalysisImpl snapshotAnalysisService;
