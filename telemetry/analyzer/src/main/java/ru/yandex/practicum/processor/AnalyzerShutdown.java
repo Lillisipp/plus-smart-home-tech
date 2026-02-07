@@ -14,10 +14,18 @@ public class AnalyzerShutdown {
     private final SnapshotProcessor snapshotProcessor;
 
     @PreDestroy
-    public void onShutdown(){
+    public void onShutdown() {
         log.info("AnalyzerShutdown: stopping processors");
-        hubEventProcessor.stop();
-        snapshotProcessor.stop();
+        try {
+            hubEventProcessor.stop();
+        } catch (Exception e) {
+            log.error("AnalyzerShutdown: error stopping HubEventProcessor", e);
+        }
+        try {
+            snapshotProcessor.stop();
+        } catch (Exception e) {
+            log.error("AnalyzerShutdown: error stopping SnapshotProcessor", e);
+        }
         log.info("AnalyzerShutdown: stop signals sent");
     }
 }

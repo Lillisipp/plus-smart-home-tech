@@ -45,7 +45,7 @@ public class HubEventProcessor implements Runnable {
                             event.getHubId(),
                             event.getPayload() == null ? "null" : event.getPayload().getClass().getSimpleName());
 
-                    service.handle(event); // бизнес-логика
+                    service.handle(event);
                 });
 
             }
@@ -55,7 +55,7 @@ public class HubEventProcessor implements Runnable {
             log.error("HubEventProcessor failed", e);
         } finally {
             try {
-                if (consumer != null) consumer.close(); // [ПОМЕТКА] закрываем consumer
+                if (consumer != null) consumer.close();
                 log.info("HubEventProcessor consumer closed");
             } catch (Exception e) {
                 log.error("Error closing HubEventProcessor consumer", e);
@@ -66,7 +66,7 @@ public class HubEventProcessor implements Runnable {
     public void stop() {
         log.info("STOP HubEventProcessor requested");
         running.set(false);
-        if (consumer != null) consumer.wakeup(); // [ПОМЕТКА] выводим из poll()
+        if (consumer != null) consumer.wakeup();
     }
 }
 

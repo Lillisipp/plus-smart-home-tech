@@ -46,7 +46,7 @@ analyzer:
         enable.auto.commit: true
         group.id: telemetry.analyzer.hubs
         key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value.deserializer: ru.yandex.practicum.kafka.deserializer.HubEventDeserializer
+        value.deserializer: kafka.serializer.deserializer.HubEventDeserializer
 
 grpc:
   client:
