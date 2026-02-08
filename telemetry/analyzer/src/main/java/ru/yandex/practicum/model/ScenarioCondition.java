@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = {"scenario", "sensor", "condition"})
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "scenario_conditions")
 public class ScenarioCondition {
