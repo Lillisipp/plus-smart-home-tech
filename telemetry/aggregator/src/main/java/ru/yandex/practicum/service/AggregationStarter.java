@@ -23,7 +23,7 @@ public class AggregationStarter {
     private final Producer<String, SensorsSnapshotAvro> producer;
     private final AggregatorKafkaProperties props;
 
-    private final SnapshotService snapshotService; // [ИЗМЕНЕНИЕ] используем сервис
+    private final SnapshotService snapshotService;
 
     public void start() {
         log.info("START AggregationStarter: sensorsTopic={}, snapshotsTopic={}, groupId={}",

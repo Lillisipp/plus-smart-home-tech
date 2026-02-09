@@ -1,4 +1,4 @@
-package kafka.serializer;
+package kafka.serializer.deserializer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.Schema;
