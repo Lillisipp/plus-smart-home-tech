@@ -1,11 +1,57 @@
+#spring:
+#  datasource:
+#    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:analyzer;MODE=PostgreSQL;DB_CLOSE_DELAY=-1}
+#    username: ${SPRING_DATASOURCE_USERNAME:sa}
+#    password: ${SPRING_DATASOURCE_PASSWORD:}
+#  jpa:
+#    hibernate:
+#      ddl-auto: none
+#    defer-datasource-initialization: true
+#  sql:
+#    init:
+#      mode: always
+#      continue-on-error: true
 spring:
-  application:
-    name: analyzer
-  config:
-    import: configserver:http://localhost:8888
-  cloud:
-    config:
-      fail-fast: true
-      retry:
-        useRandomPolicy: true
-        max-interval: 6000
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+
+
+analyzer:
+  kafka:
+    snapshot-consumer:
+      topic: telemetry.snapshots.v1
+      poll-timeout: 100ms
+      properties:
+        bootstrap.servers: localhost:9092
+        enable.auto.commit: false
+        group.id: telemetry.analyzer.snapshots
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value.deserializer: kafka.serializer.deserializer.SensorsSnapshotDeserializer
+    hub-consumer:
+      topic: telemetry.hubs.v1
+      poll-timeout: 1s
+      properties:
+        bootstrap.servers: localhost:9092
+        enable.auto.commit: true
+        group.id: telemetry.analyzer.hubs
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value.deserializer: kafka.serializer.deserializer.HubEventDeserializer
+
+grpc:
+  client:
+    hub-router:
+      address: 'static://localhost:59090'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
