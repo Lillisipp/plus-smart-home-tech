@@ -1,19 +1,11 @@
-grpc:
-  server:
-    enabled: false
-
-aggregator:
-  kafka:
-    bootstrap-servers: "localhost:9092"
-    consumer-group-id: "aggregator"
-    sensors-topic: "telemetry.sensors.v1"
-    snapshots-topic: "telemetry.snapshots.v1"
-    poll-timeout: 500ms
-
-    consumer:
-      enable.auto.commit: "false"
-      auto.offset.reset: "earliest"
-
-    producer:
-      acks: "all"
-      linger.ms: "5"
+spring:
+  application:
+    name: aggregator
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
