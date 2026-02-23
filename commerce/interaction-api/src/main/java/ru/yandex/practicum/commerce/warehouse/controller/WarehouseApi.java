@@ -1,16 +1,14 @@
 package ru.yandex.practicum.commerce.warehouse.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.commerce.cart.dto.ShoppingCartDto;
 import ru.yandex.practicum.commerce.warehouse.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.commerce.warehouse.dto.AddressDto;
 import ru.yandex.practicum.commerce.warehouse.dto.BookedProductsDto;
 import ru.yandex.practicum.commerce.warehouse.dto.NewProductInWarehouseRequest;
 
+@RequestMapping("/api/v1/warehouse")
 public interface WarehouseApi {
     @PutMapping
     void newProductInWarehouse(@RequestBody @Valid NewProductInWarehouseRequest request);
