@@ -78,7 +78,6 @@
             <artifactId>mapstruct</artifactId>
         </dependency>
 
-
     </dependencies>
 
     <build>

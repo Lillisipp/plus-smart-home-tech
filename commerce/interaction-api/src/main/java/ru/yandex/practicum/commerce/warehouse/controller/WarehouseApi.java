@@ -8,7 +8,6 @@ import ru.yandex.practicum.commerce.warehouse.dto.AddressDto;
 import ru.yandex.practicum.commerce.warehouse.dto.BookedProductsDto;
 import ru.yandex.practicum.commerce.warehouse.dto.NewProductInWarehouseRequest;
 
-@RequestMapping("/api/v1/warehouse")
 public interface WarehouseApi {
     @PutMapping
     void newProductInWarehouse(@RequestBody @Valid NewProductInWarehouseRequest request);

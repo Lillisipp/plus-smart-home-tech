@@ -37,9 +37,6 @@ public class ProductEntity {
     @Column(nullable = false)
     private ProductState productState;
 
-    @Column(nullable = false)
-    private double rating;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductCategory productCategory;

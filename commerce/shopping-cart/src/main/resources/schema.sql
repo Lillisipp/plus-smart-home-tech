@@ -1,4 +1,4 @@
--- CREATE DATABASE shopping_cart;
+CREATE SCHEMA IF NOT EXISTS shopping_carts;
 
 CREATE TABLE IF NOT EXISTS shopping_carts (
     shopping_cart_id UUID PRIMARY KEY      DEFAULT gen_random_uuid(),

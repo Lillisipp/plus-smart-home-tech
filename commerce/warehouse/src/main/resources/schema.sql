@@ -1,4 +1,5 @@
--- CREATE DATABASE warehouse;
+CREATE SCHEMA IF NOT EXISTS warehouse;
+SET search_path TO warehouse;
 
 CREATE TABLE IF NOT EXISTS warehouse
 (

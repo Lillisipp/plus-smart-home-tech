@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "warehouse")
 @RequiredArgsConstructor
-public class WarehouseProduct {
+public class WarehouseEntity {
     @Id
     private UUID productId;
 

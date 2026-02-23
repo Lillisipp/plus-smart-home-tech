@@ -17,16 +17,16 @@ import java.util.UUID;
 public class NewProductInWarehouseRequest {
 
     @NotNull
-    UUID productId;
+    private UUID productId;
 
     @NotNull
-    Boolean fragile;
+    private Boolean fragile;
 
     @NotNull
     @Valid
-    DimensionDto dimension;
+    private DimensionDto dimension;
 
     @NotNull
     @DecimalMin("1.0")
-    Double weight;
+    private Double weight;
 }
