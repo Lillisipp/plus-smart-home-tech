@@ -57,7 +57,7 @@ public class ProductService {
         if (product.getProductState() == null) {
             product.setProductState(ProductState.ACTIVE);
         }
-        if (product.getQuantityState()==null){
+        if (product.getQuantityState() == null) {
             product.setQuantityState(QuantityState.ENOUGH);
         }
 

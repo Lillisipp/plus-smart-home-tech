@@ -1,6 +1,9 @@
 package ru.yandex.practicum.commerce.util;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,7 +37,6 @@ public class PageableFactory {
 
         List<Sort.Order> orders = new ArrayList<>();
 
-        // Идём по списку индексом, чтобы поддержать пары ["productName", "DESC"]
         for (int i = 0; i < sort.size(); i++) {
             String token = sort.get(i);
             if (token == null || token.isBlank()) {
@@ -43,7 +45,6 @@ public class PageableFactory {
 
             String trimmed = token.trim();
 
-            // Случай 1: пришло "field,DESC"
             if (trimmed.contains(",")) {
                 String[] parts = trimmed.split(",", 2);
                 String property = parts[0].trim();
@@ -58,16 +59,15 @@ public class PageableFactory {
                 continue;
             }
 
-            // Случай 2: Spring разрезал по запятой: ["field", "DESC"]
             String property = trimmed;
 
-            Sort.Direction direction = Sort.Direction.ASC; // по умолчанию
+            Sort.Direction direction = Sort.Direction.ASC;
             if (i + 1 < sort.size()) {
                 String maybeDir = sort.get(i + 1);
                 Sort.Direction parsed = tryParseDirection(maybeDir);
                 if (parsed != null) {
                     direction = parsed;
-                    i++; // съели следующий элемент как направление
+                    i++;
                 }
             }
 
@@ -100,7 +100,6 @@ public class PageableFactory {
         String v = directionRaw.trim().toUpperCase(Locale.ROOT);
         if (v.isEmpty()) return null;
 
-        // поддержим только ASC/DESC (чтобы не падать от мусора)
         return switch (v) {
             case "ASC" -> Sort.Direction.ASC;
             case "DESC" -> Sort.Direction.DESC;

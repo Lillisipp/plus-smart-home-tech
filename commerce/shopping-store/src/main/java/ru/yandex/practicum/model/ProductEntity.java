@@ -1,7 +1,10 @@
 package ru.yandex.practicum.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.yandex.practicum.commerce.store.enums.ProductCategory;
 import ru.yandex.practicum.commerce.store.enums.ProductState;
 import ru.yandex.practicum.commerce.store.enums.QuantityState;

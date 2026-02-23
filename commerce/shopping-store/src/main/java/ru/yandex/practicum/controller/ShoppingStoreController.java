@@ -1,18 +1,14 @@
 package ru.yandex.practicum.controller;
 
-import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.commerce.store.controller.ShoppingStoreApi;
 import ru.yandex.practicum.commerce.store.dto.ProductDto;
-import ru.yandex.practicum.commerce.store.dto.SetQuantityStateDto;
 import ru.yandex.practicum.commerce.store.enums.ProductCategory;
 import ru.yandex.practicum.commerce.store.enums.QuantityState;
 import ru.yandex.practicum.commerce.util.PageableFactory;
@@ -31,10 +27,10 @@ public class ShoppingStoreController implements ShoppingStoreApi {
 
     @Override
     public Page<ProductDto> getProducts(
-            @RequestParam("category") ProductCategory category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) List<String> sort
+            ProductCategory category,
+            int page,
+            int size,
+            List<String> sort
     ) {
         log.info("ENTER getProducts: category={}, page={}, size={}, sort={}", category, page, size, sort);
         Pageable pageable = pageableFactory.from(page, size, sort);
@@ -57,6 +53,7 @@ public class ShoppingStoreController implements ShoppingStoreApi {
         log.info("EXIT updateProduct: productId={}", updated.getProductId());
         return updated;
     }
+
     @Override
     public boolean removeProductFromStore(UUID productId) {
         log.info("ENTER removeProductFromStore: productId={}", productId);
