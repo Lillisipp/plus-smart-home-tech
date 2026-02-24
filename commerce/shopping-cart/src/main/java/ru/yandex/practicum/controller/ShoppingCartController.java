@@ -30,7 +30,8 @@ public class ShoppingCartController implements ShoppingCartApi {
     }
 
     @Override
-    public ShoppingCartDto addProductToShoppingCart(@RequestParam @NotEmpty String username, @RequestBody Map<UUID, Long> products) {
+    public ShoppingCartDto addProductToShoppingCart(@RequestParam @NotEmpty String username,
+                                                    @RequestBody Map<UUID, Long> products) {
         log.info("ENTER controller addProductToShoppingCart: username={}", username);
         return shoppingCartService.addProductToShoppingCart(username, products);
     }

@@ -54,9 +54,8 @@ public class ProductService {
 
         ProductEntity product = productMapper.toEntity(productDto);
 
-        if (product.getProductState() == null) {
-            product.setProductState(ProductState.ACTIVE);
-        }
+        product.setProductState(ProductState.ACTIVE);
+
         if (product.getQuantityState() == null) {
             product.setQuantityState(QuantityState.ENOUGH);
         }

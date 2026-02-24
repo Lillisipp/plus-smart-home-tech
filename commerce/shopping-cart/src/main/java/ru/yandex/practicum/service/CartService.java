@@ -11,6 +11,7 @@ import ru.yandex.practicum.mapper.CartMapper;
 import ru.yandex.practicum.model.ShoppingCart;
 import ru.yandex.practicum.repository.CartRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -70,6 +71,11 @@ public class CartService {
             if (sum > Integer.MAX_VALUE) {
                 throw new IllegalArgumentException("Quantity too large for Integer: " + sum);
             }
+            if (cart.getProducts() == null) {
+                log.warn("Cart products is null, init empty map. cartId={}, username={}", cart.getShoppingCartId(), username);
+                cart.setProducts(new HashMap<>());
+            }
+
             cart.getProducts().put(productId, (int) sum);
         }
         ShoppingCartDto dtoForCheck = shoppingCartMapper.toShoppingCartDto(cart);

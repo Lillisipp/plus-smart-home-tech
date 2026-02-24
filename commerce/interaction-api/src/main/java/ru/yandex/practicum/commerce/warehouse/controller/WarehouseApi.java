@@ -8,7 +8,6 @@ import ru.yandex.practicum.commerce.warehouse.dto.AddressDto;
 import ru.yandex.practicum.commerce.warehouse.dto.BookedProductsDto;
 import ru.yandex.practicum.commerce.warehouse.dto.NewProductInWarehouseRequest;
 
-@RequestMapping("/api/v1/warehouse")
 public interface WarehouseApi {
     @PutMapping
     void newProductInWarehouse(@RequestBody @Valid NewProductInWarehouseRequest request);
@@ -19,6 +18,6 @@ public interface WarehouseApi {
     @PostMapping("/check")
     BookedProductsDto checkProductQuantityEnoughForShoppingCart(@RequestBody @Valid ShoppingCartDto shoppingCart);
 
-    @GetMapping("/address")
+    @GetMapping(value = "/address", produces = "application/json")
     AddressDto getWarehouseAddress();
 }
