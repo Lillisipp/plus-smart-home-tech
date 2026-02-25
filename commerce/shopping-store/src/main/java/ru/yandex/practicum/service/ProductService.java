@@ -33,8 +33,11 @@ public class ProductService {
                 pageable.getPageSize(),
                 pageable.getSort());
 
-        Page<ProductEntity> products = productRepository.findByProductCategoryAndProductState(
-                productCategory, ProductState.ACTIVE, pageable
+//        Page<ProductEntity> products = productRepository.findByProductCategoryAndProductState(
+//                productCategory, ProductState.ACTIVE, pageable
+//        );
+        Page<ProductEntity> products = productRepository.findByProductCategory(
+                productCategory, pageable
         );
 
         Page<ProductDto> result = products.map(productMapper::toDto);
@@ -53,7 +56,9 @@ public class ProductService {
                 productDto.getQuantityState());
 
         ProductEntity product = productMapper.toEntity(productDto);
-        product.setProductState(ProductState.ACTIVE);
+        if (product.getProductState() == null) {
+            product.setProductState(ProductState.ACTIVE);
+        }
 
         if (product.getQuantityState() == null) {
             product.setQuantityState(QuantityState.ENOUGH);

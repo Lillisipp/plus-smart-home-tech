@@ -64,7 +64,9 @@ public class ShoppingStoreController implements ShoppingStoreApi {
 
     @Override
     public boolean setProductQuantityState(@RequestParam UUID productId, QuantityState quantityState) {
+        log.info("ENTER setProductQuantityState: productId={}, quantityState={}", productId, quantityState); // [ИЗМЕНЕНИЕ]
         boolean ok = productService.setQuantityState(productId, quantityState);
+        log.info("EXIT setProductQuantityState: productId={}, ok={}", productId, ok); // [ИЗМЕНЕНИЕ]
         return ok;
     }
 
