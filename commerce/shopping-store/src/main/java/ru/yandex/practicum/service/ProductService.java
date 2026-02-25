@@ -53,15 +53,18 @@ public class ProductService {
                 productDto.getQuantityState());
 
         ProductEntity product = productMapper.toEntity(productDto);
-
         product.setProductState(ProductState.ACTIVE);
 
         if (product.getQuantityState() == null) {
             product.setQuantityState(QuantityState.ENOUGH);
         }
+        log.info("BEFORE save: entity state={}, quantityState={}",
+                product.getProductState(), product.getQuantityState());
 
         ProductEntity savedProduct = productRepository.save(product);
 
+        log.info("AFTER save: entity state={}, id={}",
+                savedProduct.getProductState(), savedProduct.getProductId());
         log.info("EXIT addProduct: productId={}", savedProduct.getProductId());
         return productMapper.toDto(savedProduct);
     }
