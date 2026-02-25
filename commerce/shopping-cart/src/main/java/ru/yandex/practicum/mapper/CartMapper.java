@@ -17,6 +17,7 @@ public interface CartMapper {
 
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "active", ignore = true)
+    @Mapping(target = "createdAt",ignore = true)
     ShoppingCart toShoppingCart(final ShoppingCartDto productDto);
 
     ShoppingCartDto toShoppingCartDto(final ShoppingCart product);

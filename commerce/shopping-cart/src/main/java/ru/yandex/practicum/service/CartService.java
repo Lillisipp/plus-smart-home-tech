@@ -31,16 +31,22 @@ public class CartService {
         validateUsername(username);
 
         ShoppingCart cart = shoppingCartRepository.findByUsernameAndActiveTrue(username)
-                .orElseGet(() -> {
-                    ShoppingCart created = ShoppingCart.builder()
-                            .username(username)
-                            .active(true)
-                            .build();
-                    ShoppingCart saved = shoppingCartRepository.save(created);
-                    log.info("Created new cart: username={}, cartId={}", username, saved.getShoppingCartId());
-                    return saved;
-                });
+                .or(() -> shoppingCartRepository.findTopByUsernameOrderByCreatedAtDesc(username))
+//                .orElseGet(() -> {
+//                    ShoppingCart created = shoppingCartRepository.save(
+//                            ShoppingCart.builder().username(username).active(true).build()
+//                    );
+//                    log.info("Created new cart in getShoppingCart: cartId={}", created.getShoppingCartId());
+//                    return created;
+//                });
+                .orElse(null);
 
+        if (cart == null) {
+            ShoppingCartDto empty = new ShoppingCartDto(null, Map.of());
+            log.info("EXIT getShoppingCart: username={}, no carts -> empty", username);
+            return empty;
+
+        }
         ShoppingCartDto dto = shoppingCartMapper.toShoppingCartDto(cart);
         log.info("EXIT getShoppingCart: username={}, cartId={}, items={}",
                 username, dto.getShoppingCartId(), dto.getProducts().size());
@@ -53,27 +59,28 @@ public class CartService {
         validateUsername(username);
 
         ShoppingCart cart = shoppingCartRepository.findByUsernameAndActiveTrue(username)
-                .orElseGet(() -> shoppingCartRepository.save(
-                        ShoppingCart.builder().username(username).active(true).build()
-                ));
-
-        if (!cart.isActive()) {
-            throw new IllegalStateException("Cart is deactivated");
-        }
+                .orElseGet(() -> {
+                    ShoppingCart created = shoppingCartRepository.save(
+                            ShoppingCart.builder().username(username).active(true).build()
+                    );
+                    log.info("Created new active cart: cartId={}", created.getShoppingCartId());
+                    return created;
+                });
 
         for (Map.Entry<UUID, Long> e : toAdd.entrySet()) {
             UUID productId = e.getKey();
             long addQty = e.getValue() == null ? 0L : e.getValue();
             if (addQty <= 0) continue;
 
-            int current = cart.getProducts().getOrDefault(productId, 0);
-            long sum = (long) current + addQty;
-            if (sum > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("Quantity too large for Integer: " + sum);
-            }
             if (cart.getProducts() == null) {
                 log.warn("Cart products is null, init empty map. cartId={}, username={}", cart.getShoppingCartId(), username);
                 cart.setProducts(new HashMap<>());
+            }
+            int current = cart.getProducts().getOrDefault(productId, 0);
+
+            long sum = (long) current + addQty;
+            if (sum > Integer.MAX_VALUE) {
+                throw new IllegalArgumentException("Quantity too large for Integer: " + sum);
             }
 
             cart.getProducts().put(productId, (int) sum);

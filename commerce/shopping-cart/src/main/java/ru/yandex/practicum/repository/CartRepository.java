@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface CartRepository extends JpaRepository<ShoppingCart, UUID> {
     @EntityGraph(attributePaths = "products")
     Optional<ShoppingCart> findByUsernameAndActiveTrue(String username);
+    Optional<ShoppingCart> findTopByUsernameOrderByCreatedAtDesc(String username);
 }

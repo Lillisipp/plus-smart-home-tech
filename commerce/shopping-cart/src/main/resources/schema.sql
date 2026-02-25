@@ -3,7 +3,8 @@ CREATE SCHEMA IF NOT EXISTS shopping_carts;
 CREATE TABLE IF NOT EXISTS shopping_carts (
     shopping_cart_id UUID PRIMARY KEY      DEFAULT gen_random_uuid(),
     username         VARCHAR(255) NOT NULL,
-    active           BOOLEAN      NOT NULL DEFAULT TRUE
+    active           BOOLEAN      NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
 CREATE TABLE IF NOT EXISTS shopping_cart_items (
