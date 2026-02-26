@@ -1,57 +1,19 @@
-#spring:
-#  datasource:
-#    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:analyzer;MODE=PostgreSQL;DB_CLOSE_DELAY=-1}
-#    username: ${SPRING_DATASOURCE_USERNAME:sa}
-#    password: ${SPRING_DATASOURCE_PASSWORD:}
-#  jpa:
-#    hibernate:
-#      ddl-auto: none
-#    defer-datasource-initialization: true
-#  sql:
-#    init:
-#      mode: always
-#      continue-on-error: true
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: none
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-      continue-on-error: false
+  application:
+    name: analyzer
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
 
-
-analyzer:
-  kafka:
-    snapshot-consumer:
-      topic: telemetry.snapshots.v1
-      poll-timeout: 100ms
-      properties:
-        bootstrap.servers: localhost:9092
-        enable.auto.commit: false
-        group.id: telemetry.analyzer.snapshots
-        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value.deserializer: kafka.serializer.deserializer.SensorsSnapshotDeserializer
-    hub-consumer:
-      topic: telemetry.hubs.v1
-      poll-timeout: 1s
-      properties:
-        bootstrap.servers: localhost:9092
-        enable.auto.commit: true
-        group.id: telemetry.analyzer.hubs
-        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value.deserializer: kafka.serializer.deserializer.HubEventDeserializer
-
-grpc:
+eureka:
   client:
-    hub-router:
-      address: 'static://localhost:59090'
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
