@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.commerce.cart.controller.ShoppingCartApi;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/v1/warehouse")
 public class ShoppingCartController implements ShoppingCartApi {
 
     private final CartService shoppingCartService;

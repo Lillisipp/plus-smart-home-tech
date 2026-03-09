@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.commerce.order.dto.ProductPriceDto;
 import ru.yandex.practicum.commerce.store.controller.ShoppingStoreApi;
 import ru.yandex.practicum.commerce.store.dto.ProductDto;
 import ru.yandex.practicum.commerce.store.enums.ProductCategory;
@@ -76,5 +79,10 @@ public class ShoppingStoreController implements ShoppingStoreApi {
         ProductDto dto = productService.getProductById(productId);
         log.info("EXIT getProduct: productId={}, name={}", productId, dto.getProductName());
         return dto;
+    }
+
+    @PostMapping("/prices")
+    public List<ProductPriceDto> getPrices(@RequestBody List<UUID> productIds) {
+        return productService.getPrices(productIds);
     }
 }

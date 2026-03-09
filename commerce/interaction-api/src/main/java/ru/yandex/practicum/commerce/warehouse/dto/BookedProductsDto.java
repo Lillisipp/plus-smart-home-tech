@@ -13,11 +13,11 @@ import lombok.Setter;
 public class BookedProductsDto {
 
     @NotNull
-    Double deliveryWeight;
+    private Double deliveryWeight;
 
     @NotNull
-    Double deliveryVolume;
+    private Double deliveryVolume;
 
     @NotNull
-    Boolean fragile;
+    private Boolean fragile;
 }
