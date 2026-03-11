@@ -8,7 +8,6 @@ import ru.yandex.practicum.commerce.warehouse.dto.*;
 import java.util.Map;
 import java.util.UUID;
 
-//@RequestMapping("/api/v1/warehouse")
 public interface WarehouseApi {
     @PutMapping
     void newProductInWarehouse(@RequestBody @Valid NewProductInWarehouseRequest request);

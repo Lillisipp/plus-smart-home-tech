@@ -4,6 +4,7 @@ public enum OrderState {
     NEW,
     ON_PAYMENT,
     ON_DELIVERY,
+    DONE,
     ASSEMBLED,
     PAID,
     DELIVERED,
@@ -13,4 +14,5 @@ public enum OrderState {
     PAYMENT_FAILED,
     PRODUCT_RETURNED,
     CANCELED
+
 }

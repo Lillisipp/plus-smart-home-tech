@@ -7,6 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.commerce.delivery.dto.DeliveryDto;
 import ru.yandex.practicum.commerce.delivery.enums.DeliveryState;
 import ru.yandex.practicum.commerce.order.dto.OrderDto;
+import ru.yandex.practicum.commerce.warehouse.controller.WarehouseApi;
+import ru.yandex.practicum.commerce.warehouse.dto.ShippedToDeliveryRequest;
+import ru.yandex.practicum.controller.OrderFeignClient;
+import ru.yandex.practicum.controller.WarehouseFeignClient;
+import ru.yandex.practicum.error.DeliveryNotFoundException;
 import ru.yandex.practicum.mapper.DeliveryMapper;
 import ru.yandex.practicum.model.Delivery;
 import ru.yandex.practicum.model.DeliveryAddress;
@@ -23,6 +28,9 @@ public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
     private final DeliveryMapper deliveryMapper;
+
+    private final WarehouseFeignClient warehouseClient;
+    private final OrderFeignClient orderClient;
 
     // PUT /api/v1/delivery
     @Transactional
@@ -62,11 +70,25 @@ public class DeliveryService {
 
     @Transactional
     public void deliveryPicked(UUID orderId) {
-        log.info("deliveryPicked: orderId={}", orderId);
+        log.info("ENTER deliveryPicked: orderId={}", orderId);
 
-        Delivery delivery = getByOrderId(orderId);
+        Delivery delivery = deliveryRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new DeliveryNotFoundException("Not Found orderId"));
+        if (delivery.getDeliveryState() != DeliveryState.CREATED) {
+            log.error("deliveryPicked: invalid state transition, orderId={}, currentState={}",
+                    orderId, delivery.getDeliveryState());
+            throw new IllegalStateException(
+                    "Delivery cannot be moved to IN_PROGRESS from state " + delivery.getDeliveryState()
+            );
+        }
         delivery.setDeliveryState(DeliveryState.IN_PROGRESS);
-        deliveryRepository.save(delivery);
+        ShippedToDeliveryRequest request =
+                new ShippedToDeliveryRequest(orderId, delivery.getDeliveryId());
+
+        warehouseClient.shippedToDelivery(request);
+        orderClient.assembly(orderId);
+        log.info("EXIT deliveryPicked: orderId={}, deliveryId={}, state={}",
+                orderId, delivery.getDeliveryId(), delivery.getDeliveryState());
     }
 
     @Transactional
@@ -76,6 +98,7 @@ public class DeliveryService {
         Delivery delivery = getByOrderId(orderId);
         delivery.setDeliveryState(DeliveryState.DELIVERED);
         deliveryRepository.save(delivery);
+        orderClient.delivery(orderId);
     }
 
     @Transactional
@@ -85,6 +108,7 @@ public class DeliveryService {
         Delivery delivery = getByOrderId(orderId);
         delivery.setDeliveryState(DeliveryState.FAILED);
         deliveryRepository.save(delivery);
+        orderClient.deliveryFailed(orderId);
     }
 
 
