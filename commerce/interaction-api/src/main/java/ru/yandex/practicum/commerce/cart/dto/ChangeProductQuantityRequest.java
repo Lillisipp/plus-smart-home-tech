@@ -18,9 +18,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ChangeProductQuantityRequest {
     @NotNull
-    UUID productId;
+    private UUID productId;
 
     @NotNull
     @Min(0)
-    Long newQuantity;
+    private Long newQuantity;
 }

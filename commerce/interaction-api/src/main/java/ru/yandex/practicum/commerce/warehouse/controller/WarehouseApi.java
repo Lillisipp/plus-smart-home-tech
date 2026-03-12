@@ -3,10 +3,10 @@ package ru.yandex.practicum.commerce.warehouse.controller;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.commerce.cart.dto.ShoppingCartDto;
-import ru.yandex.practicum.commerce.warehouse.dto.AddProductToWarehouseRequest;
-import ru.yandex.practicum.commerce.warehouse.dto.AddressDto;
-import ru.yandex.practicum.commerce.warehouse.dto.BookedProductsDto;
-import ru.yandex.practicum.commerce.warehouse.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.commerce.warehouse.dto.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 public interface WarehouseApi {
     @PutMapping
@@ -20,4 +20,13 @@ public interface WarehouseApi {
 
     @GetMapping(value = "/address", produces = "application/json")
     AddressDto getWarehouseAddress();
+
+    @PostMapping("/assembly")
+    BookedProductsDto assemblyProductsForOrder(@RequestBody @Valid AssemblyProductsForOrderRequest request);
+
+    @PostMapping("/shipped")
+    void shippedToDelivery(@RequestBody @Valid ShippedToDeliveryRequest request);
+
+    @PostMapping("/return")
+    void acceptReturn(@RequestBody @Valid AcceptReturnRequest products);
 }

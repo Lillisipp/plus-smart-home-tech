@@ -16,8 +16,8 @@ import java.util.UUID;
 public class SetQuantityStateDto {
 
     @NotNull
-    UUID productId;
+    private UUID productId;
 
     @NotNull
-    QuantityState state;
+    private QuantityState state;
 }

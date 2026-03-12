@@ -2,6 +2,7 @@ package ru.yandex.practicum.commerce.store.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.commerce.order.dto.ProductPriceDto;
 import ru.yandex.practicum.commerce.store.dto.ProductDto;
 import ru.yandex.practicum.commerce.store.enums.ProductCategory;
 import ru.yandex.practicum.commerce.store.enums.QuantityState;
@@ -33,4 +34,7 @@ public interface ShoppingStoreApi {
 
     @GetMapping("/{productId}")
     ProductDto getProduct(@PathVariable UUID productId);
+
+    @PostMapping("/prices")
+    public List<ProductPriceDto> getPrices(@RequestBody List<UUID> productIds);
 }

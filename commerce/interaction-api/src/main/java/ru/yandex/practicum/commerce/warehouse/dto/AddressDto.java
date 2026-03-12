@@ -13,13 +13,13 @@ import lombok.Setter;
 public class AddressDto {
 
     @NotBlank
-    String country;
+    private String country;
     @NotBlank
-    String city;
+    private String city;
     @NotBlank
-    String street;
+    private String street;
     @NotBlank
-    String house;
+    private String house;
     @NotBlank
-    String flat;
+    private String flat;
 }

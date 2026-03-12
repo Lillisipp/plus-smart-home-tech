@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.commerce.order.dto.ProductPriceDto;
 import ru.yandex.practicum.commerce.store.dto.ProductDto;
 import ru.yandex.practicum.commerce.store.enums.ProductCategory;
 import ru.yandex.practicum.commerce.store.enums.ProductState;
@@ -16,6 +17,7 @@ import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.model.ProductEntity;
 import ru.yandex.practicum.repository.ProductRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -33,9 +35,6 @@ public class ProductService {
                 pageable.getPageSize(),
                 pageable.getSort());
 
-//        Page<ProductEntity> products = productRepository.findByProductCategoryAndProductState(
-//                productCategory, ProductState.ACTIVE, pageable
-//        );
         Page<ProductEntity> products = productRepository.findByProductCategory(
                 productCategory, pageable
         );
@@ -127,6 +126,25 @@ public class ProductService {
 
         log.info("EXIT getProductById: productId={}, name={}", productId, product.getProductName());
         return productMapper.toDto(product);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductPriceDto> getPrices(List<UUID> productIds) {
+        log.info("getPrices: ids={}", productIds == null ? 0 : productIds.size());
+
+        if (productIds == null || productIds.isEmpty()) {
+            return List.of();
+        }
+
+        List<ProductEntity> products = productRepository.findAllByProductIdIn(productIds);
+
+        // важно: вернуть именно те, что нашли; если хочешь — можно проверять missing и кидать 404/400
+        List<ProductPriceDto> result = products.stream()
+                .map(p -> new ProductPriceDto(p.getProductId(), p.getPrice()))
+                .toList();
+
+        log.info("getPrices: requested={}, found={}", productIds.size(), result.size());
+        return result;
     }
 }
 

@@ -18,13 +18,13 @@ import lombok.Setter;
 public class DimensionDto {
     @NotNull
     @DecimalMin("1.0")
-    Double width;
+    private Double width;
 
     @NotNull
     @DecimalMin("1.0")
-    Double height;
+    private Double height;
 
     @NotNull
     @DecimalMin("1.0")
-    Double depth;
+    private Double depth;
 }

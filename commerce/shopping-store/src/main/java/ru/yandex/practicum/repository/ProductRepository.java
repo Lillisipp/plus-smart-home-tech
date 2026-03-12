@@ -7,9 +7,11 @@ import ru.yandex.practicum.commerce.store.enums.ProductCategory;
 import ru.yandex.practicum.commerce.store.enums.ProductState;
 import ru.yandex.practicum.model.ProductEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
-    Page<ProductEntity> findByProductCategoryAndProductState(ProductCategory category, ProductState state, Pageable pageable);
     Page<ProductEntity> findByProductCategory(ProductCategory productCategory, Pageable pageable);
+
+    List<ProductEntity> findAllByProductIdIn(List<UUID> productIds);
 }
